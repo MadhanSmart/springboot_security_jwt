@@ -10,6 +10,10 @@ import com.spring.securitypractice.Entity.UserInfo;
 @Repository
 public interface UserInfoRepository extends JpaRepository<UserInfo, Integer>{
 
-	Optional<UserInfo> findByName(String username);
+	boolean existsByName(String username);
+
+	boolean existsByEmail(String email);
+
+	 Optional<UserInfo> findByName(String username);
 
 }

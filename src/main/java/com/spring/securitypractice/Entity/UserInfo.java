@@ -1,10 +1,20 @@
 package com.spring.securitypractice.Entity;
 
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+@Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "name"),
+		@UniqueConstraint(columnNames = "email") })
 public class UserInfo {
 
 	@Id
@@ -13,18 +23,19 @@ public class UserInfo {
 	private String name;
 	private String email;
 	private String password;
-	private String roles;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
 
 	public UserInfo() {
 
 	}
 
-	public UserInfo(int id, String name, String email, String password, String roles) {
-		this.id = id;
-		this.name = name;
+	public UserInfo(String username, String email, String password) {
+		this.name = username;
 		this.email = email;
 		this.password = password;
-		this.roles = roles;
 	}
 
 	public int getId() {
@@ -59,11 +70,11 @@ public class UserInfo {
 		this.password = password;
 	}
 
-	public String getRoles() {
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(String roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 
@@ -73,5 +84,4 @@ public class UserInfo {
 				+ roles + "]";
 	}
 
-	
 }

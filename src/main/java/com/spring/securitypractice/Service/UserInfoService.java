@@ -1,6 +1,5 @@
 package com.spring.securitypractice.Service;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,15 +12,29 @@ import com.spring.securitypractice.Entity.UserInfo;
 
 public class UserInfoService implements UserDetails {
 
-	private String name;
+	private int id;
+	private String username;
+	private String email;
 	private String password;
-	private List<GrantedAuthority> authorities;
+	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserInfoService(UserInfo userInfo) {
-		name = userInfo.getName();
-		password = userInfo.getPassword();
-		authorities = Arrays.stream(userInfo.getRoles().split(",")).map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
+	public UserInfoService(int id, String username, String email, String password,
+			Collection<? extends GrantedAuthority> authorities) {
+		this.id = id;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.authorities = authorities;
+	}
+	
+	public static UserInfoService build(UserInfo userInfo) {
+		List<GrantedAuthority> authorities = userInfo.getRoles().stream()
+		        .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+		        .collect(Collectors.toList());
+				
+				return new UserInfoService(userInfo.getId(), 
+						userInfo.getName(), userInfo.getEmail(), 
+						userInfo.getPassword(), authorities);
 	}
 
 	@Override
@@ -36,7 +49,7 @@ public class UserInfoService implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return name;
+		return username;
 	}
 
 	@Override

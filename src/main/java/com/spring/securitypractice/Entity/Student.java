@@ -1,9 +1,13 @@
 package com.spring.securitypractice.Entity;
 
 import java.util.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Student {
@@ -15,9 +19,20 @@ public class Student {
 	private String lastName;
 	private String phoneNumber;
 	private Date birthDate;
-	
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "fk_department_id", referencedColumnName = "department_id")
+	private Department department;
+
 	public Student() {
 
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
 	}
 
 	public int getId() {
